@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "gpt-2-reproduction"
+version = "0.1.0"
+description = ""
+authors = ["Luke Martin <lukechile@gmail.com>"]
+readme = "README.md"
+packages = [{include = "gpt_2_reproduction"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = "^2.3.1"
+lightning = "^2.2.5"
+wandb = "^0.17.1"
+pydantic = "^2.7.3"
+transformers = "^4.41.2"
+tiktoken = "^0.7.0"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
