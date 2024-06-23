@@ -1,6 +1,6 @@
 
 from typing import Literal, get_args
-from torch import Tensor, softmax, matmul, tril, ones, no_grad
+from torch import Tensor, matmul, tril, ones, no_grad
 from math import sqrt
 import torch
 import torch.nn.functional as F
@@ -267,7 +267,8 @@ if __name__ == '__main__':
     num_return_sequences = 5
     max_length = 30
     
-    model = GPT2Model.from_pretrained('gpt2')
+    # model = GPT2Model.from_pretrained('gpt2')
+    model = GPT2Model(GPT2Model.Config())
     model.eval()
     model.to('cuda')
     
