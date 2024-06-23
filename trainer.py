@@ -14,7 +14,7 @@ class GPT2Lighting(L.LightningModule):
 
     class Config(BaseModel):
         model : GPT2Model.Config = GPT2Model.Config()
-        learning_rate : float = 0.001
+        learning_rate : float = 0.0001
 
     def __init__(self, config : 'GPT2Lighting.Config'):
         super().__init__()
@@ -47,8 +47,8 @@ if __name__ == "__main__":
     model = GPT2Lighting(GPT2Lighting.Config())
     dataset = TokenDataset('data/input.txt')
     
-    dataloader = DataLoader(dataset, batch_size=6, num_workers=16)
+    dataloader = DataLoader(dataset, batch_size=64, num_workers=16)
     logger = TensorBoardLogger('test_logs', name='testing_model')
     
-    trainer = L.Trainer(max_epochs=10, logger=logger)
+    trainer = L.Trainer(max_epochs=100, logger=logger, log_every_n_steps=1)
     trainer.fit(model=model, train_dataloaders=dataloader)
