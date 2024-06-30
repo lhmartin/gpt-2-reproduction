@@ -12,7 +12,7 @@ MODEL_TYPES = Literal["gpt2", "gpt2-medium", "gpt2-large", "gpt2-xl"]
 class GPT2Model(nn.Module):
     class Config(BaseModel):
         block_size: int = 1024
-        vocab_size: int = 50257
+        vocab_size: int = 50304
         n_layer: int = 12
         n_head: int = 12
         n_embd: int = 768
@@ -117,7 +117,7 @@ class GPT2Model(nn.Module):
         return model
 
     def forward(self, idx: Tensor):
-        batch_size, seq_len = idx.size()
+        _, seq_len = idx.size()
 
         assert (
             seq_len <= self.config.block_size
@@ -253,20 +253,22 @@ class CasualSelfAttention(nn.Module):
         mask: Tensor | None = None,  # mask out certain input values
     ) -> Tensor:
         # First Q * K -> [batch, n_head, seq_len, seq_len]
-        qk = matmul(queries, keys.transpose(-2, -1))
+        # qk = matmul(queries, keys.transpose(-2, -1))
 
-        # Scale
-        qv = qk * (1.0 / sqrt(keys.size(-1)))
+        # # Scale
+        # qv = qk * (1.0 / sqrt(keys.size(-1)))
 
-        # Mask out illegal connections during on the target side or padding on the input side
-        if mask is not None:
-            qv = qv.masked_fill(mask == 0, float("-inf"))
+        # # Mask out illegal connections during on the target side or padding on the input side
+        # if mask is not None:
+        #     qv = qv.masked_fill(mask == 0, float("-inf"))
 
-        # Softmax, ie: scale between [0,1] and distribute importance across the input
-        atn_values = F.softmax(qv, dim=-1)
+        # # Softmax, ie: scale between [0,1] and distribute importance across the input
+        # atn_values = F.softmax(qv, dim=-1)
 
-        # Multiple with values, ie: scale values by attention values
-        embeddings = matmul(atn_values, values)
+        # # Multiple with values, ie: scale values by attention values
+        # embeddings = matmul(atn_values, values)
+        
+        embeddings = F.scaled_dot_product_attention(queries, keys, values, is_causal=True)
 
         return embeddings
 
